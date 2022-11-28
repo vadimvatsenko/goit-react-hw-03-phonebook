@@ -1,11 +1,8 @@
 import React, { Component } from "react";
-// import PropTypes from 'prop-types';
-// import defaultContacts from './contacts/contacts.json';
 import Section from "./section";
 import Contacts from "./contacts";
 import Form from "./form";
 import Filter from './filter'
-// import Radio from './radioButton';
 import { nanoid } from 'nanoid';
 import { Notify } from 'notiflix/build/notiflix-notify-aio'
 
@@ -13,11 +10,8 @@ import style from "./contacts/contacts.module.scss";
 
 export class App extends Component {
   state = {
-  // contacts: defaultContacts,
   contacts: [],
   filter: '',
-  // name: '',
-  // number: ''
   }
 
 
@@ -34,18 +28,12 @@ export class App extends Component {
     if (getAllContactsNames.includes(name)) {
       return Notify.warning(`${name} is already in contacts`);
     }
-  
-    // this.setState(prevState => ({
-    //   contacts: [newContact, ...prevState.contacts]
-    // }))
+
     this.setState(({ contacts }) => ({
       contacts: [newContact, ...contacts]
     }));
     
   };
-
-
- 
 
   changeFilter = (e) => {
     this.setState({
@@ -68,9 +56,34 @@ export class App extends Component {
     );
   };
 
+  componentDidMount() {
+    try {
+  const savedContacts = localStorage.getItem('contacts');
+    const parseContacts = JSON.parse(savedContacts);
+    if (parseContacts) {
+      this.setState({ contacts: parseContacts });
+      };
+    
+    } catch (error) {
+        console.log(error.name); 
+        console.log(error.message);
+    };
+    
+    
+  }
+//Обычный метод класса, не стрелочная функция
+  componentDidUpdate(prevProps, prevState) {
+    console.log(prevState)//до обновления state
+    console.log(this.state);// после обновления state
+    if (prevState.contacts !== this.setState.contacts) {
+      console.log('обновилась информация');
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+    
+  }
+
   render() {
     const { contacts, filter } = this.state;
-    // const { filter } = this.state;
     const visibleContacts = this.getVisibleContatcts();
  
     return (
@@ -94,8 +107,6 @@ export class App extends Component {
         </Contacts>)
           }
         
-        
-        {/* <Radio/> */}
       </Section>
     );
   }
