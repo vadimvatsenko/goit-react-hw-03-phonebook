@@ -14,6 +14,32 @@ export class App extends Component {
   filter: '',
   }
 
+  componentDidMount() {
+    try {
+  const savedContacts = localStorage.getItem('contacts');
+    const parseContacts = JSON.parse(savedContacts);
+    if (parseContacts) {
+      this.setState({ contacts: parseContacts });
+      };
+    
+    } catch (error) {
+        console.log(error.name); 
+        console.log(error.message);
+    };
+    
+    
+  }
+//Обычный метод класса, не стрелочная функция
+  componentDidUpdate(prevProps, prevState) {
+    console.log(prevState)//до обновления state
+    console.log(this.state);// после обновления state
+    if (prevState.contacts !== this.setState.contacts) {
+      console.log('обновилась информация');
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+    
+  }
+
 
 
   formSubmitHandle = ({ name, number }) => {
@@ -56,31 +82,7 @@ export class App extends Component {
     );
   };
 
-  componentDidMount() {
-    try {
-  const savedContacts = localStorage.getItem('contacts');
-    const parseContacts = JSON.parse(savedContacts);
-    if (parseContacts) {
-      this.setState({ contacts: parseContacts });
-      };
-    
-    } catch (error) {
-        console.log(error.name); 
-        console.log(error.message);
-    };
-    
-    
-  }
-//Обычный метод класса, не стрелочная функция
-  componentDidUpdate(prevProps, prevState) {
-    console.log(prevState)//до обновления state
-    console.log(this.state);// после обновления state
-    if (prevState.contacts !== this.setState.contacts) {
-      console.log('обновилась информация');
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-    
-  }
+  
 
   render() {
     const { contacts, filter } = this.state;
